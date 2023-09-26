@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 // .6버전에서 쓰는 것
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from './AuthContext'
 
 /*const User = {
     id: 'testuser',
@@ -31,95 +32,112 @@ function Modal({ message, onClose }) {
 
 
 export default function Login() {
-    const [id, setId] = useState('');
-    const [pw, setPw] = useState('');
+      /*    const [id, setId] = useState('');
+       const [pw, setPw] = useState('');
 
-    const [showModal, setShowModal] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
+       const [showModal, setShowModal] = useState(false);
+       const [alertMessage, setAlertMessage] = useState('');
 
-    const navigate = useNavigate();
-    const location = useLocation();
+       const navigate = useNavigate();
+       const location = useLocation();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false); //로그인과 로그아웃 상태 관리를 위한 상태 변수*/
+       /!* const [isLoggedIn, setIsLoggedIn] = useState(false); //로그인과 로그아웃 상태 관리를 위한 상태 변수*!/!*!/
 
-    // localStorge에 토큰이 있는 경우 로그인 상태로 간주, 최상위 레벨에서 호출되어야 한다.
-    useEffect(() => {
-        const token = localStorage.getItem('jwt');
-        if (token) setIsLoggedIn(true);
-    }, []);
+       const { isLoggedIn, login, logout } = useAuth();
 
-    // 로그아웃 함수도 최상위 레벨에 위치
-    const logout = () => {
-        localStorage.removeItem('jwt');
-        setIsLoggedIn(false);
-        toast.success('로그아웃에 성공했습니다.');
-        navigate('/');
-    };
 
-    const handleId = (e) => {
-        setId(e.target.value);
-    };
+       // localStorge에 토큰이 있는 경우 로그인 상태로 간주, 최상위 레벨에서 호출되어야 한다.
+       useEffect(() => {
+           const token = localStorage.getItem('jwt');
+           if (token ) setIsLoggedIn(true);
+       }, []);
 
-    const handlePw = (e) => {
-        setPw(e.target.value);
-    };
+       /!* // 로그아웃 함수도 최상위 레벨에 위치
+        const logout = () => {
+            localStorage.removeItem('jwt');
+            setIsLoggedIn(false);
+            toast.success('로그아웃에 성공했습니다.');
+            navigate('/');
+        };*!/
 
-   const onClickConfirmButton = () => {
-        console.log("Button clicked!");          // 1. 로그 확인
-        console.log("ID:", id, "PW:", pw);      // 2. 상태 값 확인
-
-        const endpoint = 'http://localhost:8080/api/login';
-
-       let data = JSON.stringify({
-           "member_id": id,
-           "member_password": pw
-       });
-
-       let config = {
-           method: 'post',
-           maxBodyLength: Infinity,
-           url: endpoint,
-           headers: {
-               'Content-Type': 'application/json'
-           },
-           data : data
+       const handleId = (e) => {
+           setId(e.target.value);
        };
 
+       const handlePw = (e) => {
+           setPw(e.target.value);
+       };*/
+
+    const [id, setId] = useState('');
+    const [pw, setPw] = useState('');
+    const navigate = useNavigate();
+    const { isLoggedIn, login, logout } = useAuth();
+
+    useEffect(() => {
+        const token = localStorage.getItem('jwt');
+        if (token) navigate('/recommend');
+    }, [navigate]);
 
 
-       //  로컬 스토리지에 토큰을 저장하는 부분
-       axios.request(config)
-           .then((response) => {
-               console.log(JSON.stringify(response.data));
-               if( response.data?.token != undefined) {
-                   toast.success('로그인에 성공했습니다.');
-                   localStorage.setItem("jwt",  response.data?.token);
-                   setIsLoggedIn(true);
-                   navigate('/recommend');
-               } else {
+    const onClickConfirmButton = () => {
+           // console.log("Button clicked!");          // 1. 로그 확인
+           // console.log("ID:", id, "PW:", pw);      // 2. 상태 값 확인
+           //
+           // const endpoint = 'http://localhost:8080/api/login';
+           //
+           // let data = JSON.stringify({
+           //     "member_id": id,
+           //     "member_password": pw
+           // });
+           //
+           // // /* let config = {
+           // //      method: 'post',
+           // //      maxBodyLength: Infinity,
+           // //      url: endpoint,
+           // //      headers: {
+           // //          'Content-Type': 'application/json'
+           // //      },
+           // //      data : data
+           // //  };*/
+
+        login(id, pw, navigate);
+
+        const handleId = (e) => setId(e.target.value);
+        const handlePw = (e) => setPw(e.target.value);
+
+
+
+         /*  //  로컬 스토리지에 토큰을 저장하는 부분
+           axios.request(config)
+               .then((response) => {
+                   console.log(JSON.stringify(response.data));
+                   if( response.data?.token != undefined) {
+                       toast.success('로그인에 성공했습니다.');
+                       localStorage.setItem("jwt",  response.data?.token);
+                       setIsLoggedIn(true);
+                       navigate('/recommend');
+                   } else {
+                       toast.warning('로그인 실패했습니다. 아이디나 비밀번호를 확인해주세요');
+                   }
+
+
+                   // if (id !== User.id) {
+                   //     console.log("Incorrect ID");        // 로그 확인
+                   //     toast.warning('아이디가 존재하지 않습니다. 회원가입이 필요합니다.');
+                   // } else if (pw !== User.pw) {
+                   //     console.log("Incorrect Password");  // 로그 확인
+                   //     toast.warning('비밀번호가 다릅니다. 확인해주세요.');
+                   // } else {
+                   //     console.log("Login Successful");    // 로그 확인
+                   //     toast.success('로그인에 성공했습니다.');
+                   // }
+               })
+               .catch((error) => {
+                   console.log(error);
                    toast.warning('로그인 실패했습니다. 아이디나 비밀번호를 확인해주세요');
-               }
-
-
-               // if (id !== User.id) {
-               //     console.log("Incorrect ID");        // 로그 확인
-               //     toast.warning('아이디가 존재하지 않습니다. 회원가입이 필요합니다.');
-               // } else if (pw !== User.pw) {
-               //     console.log("Incorrect Password");  // 로그 확인
-               //     toast.warning('비밀번호가 다릅니다. 확인해주세요.');
-               // } else {
-               //     console.log("Login Successful");    // 로그 확인
-               //     toast.success('로그인에 성공했습니다.');
-               // }
-           })
-           .catch((error) => {
-               console.log(error);
-               toast.warning('로그인 실패했습니다. 아이디나 비밀번호를 확인해주세요');
-           });
+               }*/);
 
    };
-
-
 
     return (
 

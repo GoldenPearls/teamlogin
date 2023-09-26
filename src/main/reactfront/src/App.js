@@ -7,10 +7,12 @@ import Recommend from "./routers/Recommend/Recommend";
 import Community from "./routers/Community/Community";
 import Navigation from "./components/nav/Navigation";
 import Login from "./routers/Login/Login";
+import { AuthProvider } from "./routers/Login/AuthContext";
 
 function App() {
     return (
         <Router>
+            <AuthProvider>
             <Navigation />
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -19,6 +21,7 @@ function App() {
                 <Route path="/community" element={<Community />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
+            </AuthProvider>
         </Router>
     );
 }
