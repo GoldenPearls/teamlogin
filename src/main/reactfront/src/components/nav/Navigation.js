@@ -11,7 +11,7 @@ import fireworks from '../../img/nav/fireworks.png';
 import fireworks_click from '../../img/nav/fireworks_click.png';
 import communication from '../../img/nav/communication.png';
 import communication_click from '../../img/nav/communication_click.png';
-
+import { useAuth } from '../../routers/Login/AuthContext';
 import { useMediaQuery } from 'react-responsive'
 
 const Mobile = ({ children }) => {
@@ -25,7 +25,8 @@ const Default = ({ children }) => {
 
 function Navigation() {
     const location = useLocation();
-    const isActive = path => location.pathname === path;
+    const { isLoggedIn, logout } = useAuth();
+    ath;
     return (
         <div className="nav">
             <Default>
@@ -35,7 +36,14 @@ function Navigation() {
                 <Link to="/recommend" className={`recommend-link ${isActive("/recommend") ? "active" : ""}`}>추천할 수 박에</Link> <br></br>
                 <Link to="/festival" className={`festival-link ${isActive("/festival") ? "active" : ""}`}>축제/행사 소개</Link> <br></br>
                 <Link to="/community" className={`community-link ${isActive("/community") ? "active" : ""}`}>너와 나의 연결고리</Link> <br></br>
-                <Link to="/login" className="login-btn">Login</Link>
+                {/*<Link to="/login" className="login-btn">Login</Link>*/}
+                    {
+                        isLoggedIn ? (
+                            <button onClick={logout} className="login-btn">Logout</button>
+                        ) : (
+                            <Link to="/login" className="login-btn">Login</Link>
+                        )
+                    }
                 </>
             </Default>
 
@@ -46,7 +54,14 @@ function Navigation() {
                     <Link to="/recommend" className="recommend-mobile"> <img src={isActive("/recommend")? recommend_click : recommend} alt="recommend Logo" className="recommend"/><br/>추천 할 수 박에</Link> <br></br>
                     <Link to="/festival" className="festival-mobile"><img src={isActive("/festival")? fireworks_click : fireworks} alt="fireworks Logo" className="fireworks"/><br/>축제/행사 소개</Link> <br></br>
                     <Link to="/community" className="community-mobile"> <img src={isActive("/community")? communication_click : communication} alt="communication Logo" className="communication"/><br/>너와 나의 연결고리</Link> <br></br>
-                    <Link to="/login" className="login-btn">Login</Link>
+                    {/*<Link to="/login" className="login-btn">Login</Link>*/}
+                    {
+                        isLoggedIn ? (
+                            <button onClick={logout} className="login-btn">Logout</button>
+                        ) : (
+                            <Link to="/login" className="login-btn">Login</Link>
+                        )
+                    }
                 </>
             </Mobile>
         </div>
